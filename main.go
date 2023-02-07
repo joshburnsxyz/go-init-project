@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"os/exec"
 )
 
 var (
@@ -39,8 +40,27 @@ func main() {
 			// FIXME: Handle writeFileErr
 			panic(writeFileErr)
 		}
+		mainDotGoContent = nil
+		writeFileErr = nil
+
 		fmt.Println("=> Initializing go modules")
+		cmdOut, cmdErr := exec.Command("go", "mod", "init", pkgDecl).Output()
+		if cmdErr != nil {
+			// FIXME: Handle cmdErr properly
+			panic(cmdErr)
+		}
+		fmt.Println(cmdOut)
+
 		fmt.Println("=> Tidying modules")
+ 		cmdOut, cmdErr = exec.Command("go", "mod", "tidy").Output()
+		if cmdErr != nil {
+			// FIXME: Handle cmdErr properly
+			panic(cmdErr)
+		}
+		fmt.Println(cmdOut)
+    cmdOut = nil
+    cmdErr = nil
+   
 		fmt.Println("=> Done")
 	}
 }
